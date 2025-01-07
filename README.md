@@ -9,6 +9,17 @@ A web application that allows users to check the current weather for any city us
 - **City Map**: Shows the map of the city for better context.
 - **User-Friendly Interface**: Clean and interactive design for an enhanced user experience.
 
+## Dependencies
+
+python = "^3.11"
+requests = "^2.32.3"
+datetime = "^5.5"
+streamlit = "^1.41.1"
+matplotlib = "^3.10.0"
+poetry-plugin-export = "^1.8.0"
+folium = "^0.19.4"
+streamlit-folium = "^0.24.0"
+
 ## Installation
 
 1. Clone the repository:
@@ -25,8 +36,9 @@ A web application that allows users to check the current weather for any city us
 
 4. Set up your API key:
 
-    - Sign up for an OpenWeather account here to get your API key.
-    - Add your API key in the .streamlit/secrets.toml file:
+   * Sign up for an OpenWeather account here to get your API key.
+   * Add your API key in the .streamlit/secrets.toml file:
+   
     ```toml
     OPENWEATHER_API_KEY = "your_api_key_here"
 
