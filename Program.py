@@ -1,42 +1,7 @@
-import requests
-from datetime import datetime
 import streamlit as st
-import matplotlib.pyplot as plt
+from weather_functions import fetch_weather, fetch_map, create_weather_plot
 
-def get_weather(city_name, api_key):
-    url = "http://api.openweathermap.org/data/2.5/weather"
-    params = {
-        "q": city_name,
-        "appid": api_key,
-        "units": "metric"
-    }
-
-    try:
-        response = requests.get(url, params=params)
-        response.raise_for_status()  # Raise HTTPError for bad responses (4xx and 5xx)
-        weather_data = response.json()
-
-        # Extract data safely
-        city = weather_data.get("name", "Unknown City")
-        temperature = weather_data["main"].get("temp", "N/A")
-        humidity = weather_data["main"].get("humidity", "N/A")
-        weather = weather_data["weather"][0].get("description", "No description available")
-
-        return {
-            "city": city,
-            "temperature": temperature,
-            "humidity": humidity,
-            "weather": weather,
-        }
-    except requests.exceptions.RequestException as e:
-        st.error(f"Error: {e}")
-        return None
-    except KeyError as e:
-        st.error(f"Missing data in API response: {e}")
-        return None
-
-
-# Streamlit app
+# App title
 st.title('Weather Checker App 🌦️')
 
 # Input for the city name
@@ -45,33 +10,53 @@ city_name = st.text_input("Enter the name of the city:", "")
 # Button to fetch weather details
 if st.button("Check Weather"):
     if city_name.strip():
-        api_key = st.secrets["OPENWEATHER_API_KEY"]
+
+        # Fetch the API key from Streamlit secrets
+        api_key = st.secrets.get("OPENWEATHER_API_KEY")
+
         if not api_key:
             st.error("API key not found! Add it to Streamlit secrets.")
-        weather = get_weather(city_name, api_key)
-
-        if weather:
-            st.subheader(f"Weather Details for {weather['city']} 🌍")
-
-            # Display metrics
-            col1, col2 = st.columns(2)
-            col1.metric("Temperature", f"{weather['temperature']}°C")
-            col2.metric("Humidity", f"{weather['humidity']}%")
-            st.text(f"Weather Condition: {weather['weather'].capitalize()}")
-
-            # Plotting temperature and humidity
-            labels = ['Temperature (°C)', 'Humidity (%)']
-            values = [weather['temperature'], weather['humidity']]
-
-            fig, ax = plt.subplots()
-            bars = ax.bar(labels, values, color=['skyblue', 'orange'])
-            ax.bar_label(bars, fmt='%.1f')
-            ax.set_ylim(0, max(values) + 10)
-            plt.title("Weather Data Overview")
-            st.pyplot(fig)
         else:
-            st.error("Could not fetch weather details. Please check the city name.")
+            # Fetch weather details
+            weather_data = fetch_weather(city_name, api_key)
+
+            if weather_data:
+                # Display city and weather details
+                st.subheader(f"Weather Details for {weather_data['city']} 🌍")
+
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
+                    # Display weather icon
+                    st.image(
+                        weather_data['icon_url'],
+                        width=80,
+                        caption=f"{weather_data['weather'].capitalize()}"
+                    )
+
+                with col2:
+                    st.metric("Temperature", f"{weather_data['temperature']} °C")
+
+                with col3:
+                    st.metric("Humidity", f"{weather_data['humidity']}%")
+
+                # Creating temperature and humidity plot
+                labels = ['Temperature (°C)', 'Humidity (%)']
+                values = [weather_data['temperature'], weather_data['humidity']]
+                fig = create_weather_plot(labels, values)
+
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    # Display plot
+                    col1.pyplot(fig)
+
+                with col2:
+                    # Display map
+                    fetch_map(city_name, weather_data["coord"]["lat"], weather_data["coord"]["lon"])
+
+            else:
+                st.error("Could not fetch weather details. Please check the city name.")
+
     else:
         st.error("Please enter a city name!")
-
-

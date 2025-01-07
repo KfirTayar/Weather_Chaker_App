@@ -1,19 +1,13 @@
 # Weather Checker App
 
-A Streamlit application that allows users to check the current weather for any city using the OpenWeather API. This app provides temperature, weather conditions, and humidity information based on user input.
+A web application that allows users to check the current weather for any city using the OpenWeather API. The app provides temperature, weather conditions, humidity information, and a map of the city based on user input.
 
 ## Features
 
 - **City Input**: Users can input a city name to get its weather details.
 - **Weather Information**: Displays current temperature, weather conditions, and humidity.
-- **User-Friendly Interface**: Clean, interactive interface built with Streamlit.
-
-## Requirements
-
-- Python 3.7+
-- Streamlit
-- Requests
-- OpenWeather API key
+- **City Map**: Shows the map of the city for better context.
+- **User-Friendly Interface**: Clean and interactive design for an enhanced user experience.
 
 ## Installation
 
