@@ -40,9 +40,8 @@ This project requires the following dependencies:
 
 - Sign up for an OpenWeather account here to get your API key.
 - Add your API key in the .streamlit/secrets.toml file:
-   
- ```toml
- OPENWEATHER_API_KEY = "your_api_key_here"
+    ```toml
+    OPENWEATHER_API_KEY = "your_api_key_here"
 
 ## Usage
     
