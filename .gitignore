@@ -1,3 +1,16 @@
 # Ignore the secrets file
 .streamlit/secrets.toml
-__pycache__
+
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore IDE settings (PyCharm)
+.idea/
+
+# Ignore configuration files for tests, etc.
+*.log
+*.bak
+*.swp
+
